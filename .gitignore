@@ -1,0 +1,45 @@
+# ── Data files (too large for GitHub — stored on OneDrive) ───────────────────
+Data/
+*.csv
+*.parquet
+*.h5
+*.pkl
+*.joblib
+
+# ── Generated outputs (reproducible from notebooks) ──────────────────────────
+outputs/
+data_processed/
+
+# ── Python environment ────────────────────────────────────────────────────────
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+*.so
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.nbconvert.ipynb
+
+# ── OS junk ───────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── IDE ───────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+
+# ── Secrets / credentials ─────────────────────────────────────────────────────
+.env
+*.key
+credentials.json
+
+# ── Temporary scripts ─────────────────────────────────────────────────────────
+fix_notebooks.py
+data_processed/
