@@ -9,6 +9,8 @@ Data/
 # ── Generated outputs (reproducible from notebooks) ──────────────────────────
 outputs/
 data_processed/
+catboost_info/
+notebooks/catboost_info/
 
 # ── Python environment ────────────────────────────────────────────────────────
 venv/
