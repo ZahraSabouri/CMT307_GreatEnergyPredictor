@@ -10,7 +10,7 @@ Cardiff University | Spring 2025/26 | Task 9: Energy Usage Prediction
 | Shriya | `Shriya_Train_Core_Audit.ipynb` | `train.csv` audit & time features |
 | Wahid | `Wahid_Building_Metadata_Audit.ipynb` | `building_metadata.csv` audit |
 | Tanisha | `Tanisha_Weather_Audit.ipynb` | Weather data audit |
-| Zahra | `Zahra_Data_Merging.ipynb` | Data merging — team lead |
+| Zahra | `Zahra_Data_Merging.ipynb` | Data merging |
 | Shivalika | `Shivalika_Time_Series_Patterns.ipynb` | Time series + LightGBM |
 | Ayan | `Ayan_Anomaly_Investigation.ipynb` | Anomaly detection + Random Forest |
 
