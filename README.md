@@ -7,12 +7,12 @@ Cardiff University | Spring 2025/26 | Task 9: Energy Usage Prediction
 
 | Name | Notebook | Focus |
 |------|----------|-------|
-| Shriya | `Shriya_Train_Core_Audit.ipynb` | `train.csv` audit & time features |
-| Wahid | `Wahid_Building_Metadata_Audit.ipynb` | `building_metadata.csv` audit |
-| Tanisha | `Tanisha_Weather_Audit.ipynb` | Weather data audit |
-| Zahra | `Zahra_Data_Merging.ipynb` | Data merging |
-| Shivalika | `Shivalika_Time_Series_Patterns.ipynb` | Time series + LightGBM |
-| Ayan | `Ayan_Anomaly_Investigation.ipynb` | Anomaly detection + Random Forest |
+| Shriya | `Shriya_Train_Audit_and_Verification.ipynb` | `train.csv` audit and result verification |
+| Wahid | `Wahid_Building_Metadata_and_Models.ipynb` | Building metadata audit, Linear Regression, XGBoost, CatBoost |
+| Tanisha | `Tanisha_Weather_and_Literature_Review.ipynb` | Weather audit, weather preprocessing, literature review |
+| Zahra | `Zahra_Integration_and_Ensemble.ipynb` | Data merging, central preprocessing, five-model ensemble |
+| Shivalika | `Shivalika_TimeSeries_and_LightGBM.ipynb` | Time-series EDA, lag/rolling features, LightGBM and XGBoost |
+| Ayan | `Ayan_Anomalies_and_RandomForest.ipynb` | Anomaly detection, Random Forest, CatBoost tuning |
 
 > Shivalika and Ayan start from Sprint 2 — they depend on Zahra's merged output.
 

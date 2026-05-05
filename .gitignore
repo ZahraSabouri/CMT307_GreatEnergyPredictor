@@ -45,3 +45,9 @@ credentials.json
 # ── Temporary scripts ─────────────────────────────────────────────────────────
 fix_notebooks.py
 data_processed/
+
+# ── Contribution-report material (local audit, not part of submission) ───────
+# Keep these out of the repo; they were generated for peer-assessment writing
+# only. The single Codex-generated HTML report stays visible to teammates.
+docs/CMT307_Git_Change_Report/*
+!docs/CMT307_Git_Change_Report/Contribution_Report_for_Peer_Assessment.html
