@@ -1,80 +1,181 @@
-# CMT307 Applied Machine Learning — ASHRAE Great Energy Predictor III
-Cardiff University | Spring 2025/26 | Task 9: Energy Usage Prediction
+# CMT307 Applied Machine Learning: ASHRAE Energy Prediction
 
----
+Cardiff University, CMT307 Applied Machine Learning, 2025/26  
+Task: predict hourly building energy use using the ASHRAE Great Energy Predictor III dataset.
 
-## Team
+This README explains how to run the submitted code required by the assessment brief:
 
-| Name | Notebook | Focus |
-|------|----------|-------|
-| Shriya | `Shriya_Train_Audit_and_Verification.ipynb` | `train.csv` audit and result verification |
-| Wahid | `Wahid_Building_Metadata_and_Models.ipynb` | Building metadata audit, Linear Regression, XGBoost, CatBoost |
-| Tanisha | `Tanisha_Weather_and_Literature_Review.ipynb` | Weather audit, weather preprocessing, literature review |
-| Zahra | `Zahra_Integration_and_Ensemble.ipynb` | Data merging, central preprocessing, five-model ensemble |
-| Shivalika | `Shivalika_TimeSeries_and_LightGBM.ipynb` | Time-series EDA, lag/rolling features, LightGBM and XGBoost |
-| Ayan | `Ayan_Anomalies_and_RandomForest.ipynb` | Anomaly detection, Random Forest, CatBoost tuning |
+1. Code used to produce statistics and plots for the descriptive analysis.
+2. Code used to preprocess the original data, train models, and evaluate them on a held-out test set.
 
-> Shivalika and Ayan start from Sprint 2 — they depend on Zahra's merged output.
+The final report uses Root Mean Squared Logarithmic Error (RMSLE). All modelling notebooks train on `log1p(meter_reading)` and convert predictions back to the original scale before evaluation.
 
----
+## Repository Contents
 
-## How to Work
-
-1. Open **Google Colab Enterprise** — Cardiff project: `cu-student-comsc-colab-cmt307`
-2. Upload your notebook from the `notebooks/` folder (File → Upload notebook)
-3. Run the setup cell at the top to download your data files
-4. Do your work under the correct sprint section
-5. At the end: **File → Download → Download .ipynb**
-6. On your computer: move the file to `notebooks/`, then push to GitHub (see below)
-
----
-
-## Pushing to GitHub
-
-```bash
-git add notebooks/YourName_Notebook.ipynb
-git commit -m "sprint 1: brief description of what you did"
-git push
+```text
+.
+|-- README.md
+|-- requirements.txt
+|-- notebooks/
+|   |-- Shriya_Train_Audit_and_Verification.ipynb
+|   |-- Tanisha_Weather_and_Literature_Review.ipynb
+|   |-- Wahid_Building_Metadata_and_Models.ipynb
+|   |-- Zahra_Integration_and_Ensemble.ipynb
+|   |-- Shivalika_TimeSeries_and_LightGBM.ipynb
+|   `-- Ayan_Anomalies_and_RandomForest.ipynb
+`-- shared/
+    |-- data_loader.py
+    `-- metrics.py
 ```
 
-You need to have cloned the repo and set up git on your machine once. Ask Zahra for the repo link.
+Large data files, processed CSV files, saved model files, and generated outputs are not included in the code zip because they are reproducible and too large for submission.
 
----
+## Data Setup
 
-## Data Files
+Download the ASHRAE Great Energy Predictor III files and place them here:
 
-All six files are on OneDrive. Your notebook's setup cell already has the links — just run it.
+```text
+data/ashrae-energy-prediction/
+|-- train.csv
+|-- test.csv
+|-- building_metadata.csv
+|-- weather_train.csv
+|-- weather_test.csv
+`-- sample_submission.csv
+```
 
-| File | Rows | Description |
-|------|------|-------------|
-| `train.csv` | 20.2M | Hourly meter readings 2016 |
-| `test.csv` | 41.7M | Meter readings 2017–2018 (predict these) |
-| `building_metadata.csv` | 1,449 | Building type, size, site |
-| `weather_train.csv` | 139K | Hourly weather at 16 sites, 2016 |
-| `weather_test.csv` | 277K | Hourly weather at 16 sites, 2017–2018 |
-| `sample_submission.csv` | — | Submission format |
+The notebooks expect this relative path when run from the `notebooks/` folder:
 
-Meter types: `0` Electricity · `1` Chilled Water · `2` Steam · `3` Hot Water
+```text
+../data/ashrae-energy-prediction/
+```
 
----
+The helper file `shared/data_loader.py` also contains OneDrive download links used during development. If running in Google Colab, upload the notebooks and either mount/download the data to the matching paths or adapt the first data-loading cell to point to the Colab data folder.
 
-## Evaluation Metric
+## Environment Setup
 
-**RMSLE** — Root Mean Squared Log Error. Use `np.log1p(meter_reading)` throughout.
+Python 3.10 or newer is recommended.
 
----
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+python -m ipykernel install --user --name cmt307-ashrae
+jupyter lab
+```
 
-## Report Tasks
+On macOS/Linux, activate the environment with:
 
-| Task | Description | Weight |
-|------|-------------|--------|
-| T1-1 | Descriptive analysis | 10% |
-| T1-2 | Results analysis and discussion | 10% |
-| T2-1 | Preprocessing — missing values, outliers, features | 10% |
-| T2-2 | Literature review | 10% |
-| T3-1 | Model implementation and tuning | 15% |
-| T3-2 | Model evaluation | 5% |
-| T4 | Report structure and clarity | 20% |
-| Part 2 | Peer assessment and self-reflection | 20% |
+```bash
+source .venv/bin/activate
+```
 
-Max 4500 words · 10 pages · 10pt font · 20mm margins
+Before running the notebooks, create the output folders if they do not already exist:
+
+```bash
+mkdir data_processed outputs
+```
+
+## Part 1: Descriptive Analysis Statistics
+
+Run these notebooks to reproduce the statistics, checks, and plots used for the descriptive analysis in the report.
+
+| Notebook | Main purpose | Main inputs | Main outputs |
+|---|---|---|---|
+| `Shriya_Train_Audit_and_Verification.ipynb` | Audits `train.csv` and `test.csv`, checks meter-reading patterns, validates merged train/test files. | Raw train/test data and merged files. | Dataset shape checks, meter summaries, time-feature checks. |
+| `Tanisha_Weather_and_Literature_Review.ipynb` | Audits weather missingness and produces processed weather files. | `weather_train.csv`, `weather_test.csv`. | `data_processed/weather_train_processed.csv`, `data_processed/weather_test_processed.csv`. |
+| `Wahid_Building_Metadata_and_Models.ipynb` | Audits building metadata, missing values, building categories, and feature transformations. | `building_metadata.csv`. | `data_processed/building_metadata_processed.csv`, metadata EDA tables/plots. |
+| `Shivalika_TimeSeries_and_LightGBM.ipynb` | Produces time-series EDA: hourly, monthly, weekday/weekend, timeline, and heatmap patterns. | `data_processed/merged_train.csv`. | Time-series plots and lag/rolling feature checks. |
+| `Ayan_Anomalies_and_RandomForest.ipynb` | Investigates zero streaks, Site 0 electricity calibration issue, extreme outliers, and sudden jumps. | `data_processed/merged_train.csv`. | Anomaly tables, including zero-streak building/meter pairs. |
+
+For a full fresh run, create the merged training file first by running the initial merge cells of `Zahra_Integration_and_Ensemble.ipynb`. Those cells save:
+
+```text
+data_processed/merged_train.csv
+```
+
+Then run the descriptive notebooks above.
+
+## Part 2: Preprocessing, Model Training, and Evaluation
+
+The most reliable full reproduction order is:
+
+1. `Zahra_Integration_and_Ensemble.ipynb`, initial merge cells  
+   Creates `merged_train.csv` from the original train, building metadata, and weather training files. The unused Kaggle `test.csv` merge is not part of the final workflow.
+
+2. `Ayan_Anomalies_and_RandomForest.ipynb`, anomaly-detection section  
+   Produces the anomaly report used by the central cleaning pipeline. Save the combined anomaly table as:
+
+   ```text
+   outputs/anomaly_report.csv
+   ```
+
+3. `Zahra_Integration_and_Ensemble.ipynb`, central preprocessing cells  
+   Applies metadata imputation, weather imputation, feature engineering, anomaly cleaning, target transformation, and chronological train/validation split. This saves:
+
+   ```text
+   data_processed/final_train.csv
+   data_processed/final_val.csv
+   ```
+
+4. `Shivalika_TimeSeries_and_LightGBM.ipynb`, feature-engineering section  
+   Adds lag and rolling features and saves the train set plus the held-out validation period. The historical filename `final_test_with_features.csv` refers to the validation split, not the Kaggle test set.
+
+   ```text
+   data_processed/final_train_with_features.csv
+   data_processed/final_test_with_features.csv
+   ```
+
+5. Model notebooks:
+
+   | Notebook | Models trained/evaluated | Saved results |
+   |---|---|---|
+   | `Wahid_Building_Metadata_and_Models.ipynb` | Linear Regression, XGBoost, CatBoost baseline. | `outputs/linear_boosting_model_results.csv`, saved model files. |
+   | `Shivalika_TimeSeries_and_LightGBM.ipynb` | LightGBM and XGBoost with lag/rolling features. | LightGBM/XGBoost metrics and saved model files. |
+   | `Ayan_Anomalies_and_RandomForest.ipynb` | Random Forest and tuned CatBoost comparison. | `outputs/baseline_evaluation_results.csv`, Random Forest/CatBoost metrics. |
+   | `Zahra_Integration_and_Ensemble.ipynb`, ensemble section | Hard voting and soft voting ensemble using saved model predictions. | `outputs/comparison_table.csv`, `outputs/ensemble_val_predictions.csv`. |
+
+The report's best validation result is the soft-voting CatBoost + LightGBM ensemble, with RMSLE approximately `0.4997` on the November-December 2016 held-out validation period.
+
+## Notes on Runtime
+
+The original dataset is large:
+
+- `train.csv`: about 20.2 million rows.
+- `test.csv`: about 41.7 million rows.
+- The processed and feature-engineered CSVs can be several GB.
+
+Run the notebooks on a machine or Colab runtime with enough memory. If memory is limited, run the audit notebooks first, then run modelling notebooks on sampled data only for verification. The reported results were produced from the full processed training split unless a notebook explicitly states that a sample was used for hyperparameter search.
+
+## What to Upload
+
+The assessment brief asks for a group report and a separate zip file containing all Python code plus this README.
+
+Recommended code zip contents:
+
+```text
+CMT307_ASHRAE_Code/
+|-- README.md
+|-- requirements.txt
+|-- notebooks/
+|   |-- Shriya_Train_Audit_and_Verification.ipynb
+|   |-- Tanisha_Weather_and_Literature_Review.ipynb
+|   |-- Wahid_Building_Metadata_and_Models.ipynb
+|   |-- Zahra_Integration_and_Ensemble.ipynb
+|   |-- Shivalika_TimeSeries_and_LightGBM.ipynb
+|   `-- Ayan_Anomalies_and_RandomForest.ipynb
+`-- shared/
+    |-- data_loader.py
+    `-- metrics.py
+```
+
+Do not include these in the code zip:
+
+- `data/`
+- `data_processed/`
+- `outputs/`
+- `.git/`
+- `.ipynb_checkpoints/`
+- report drafts, planning documents, peer-assessment audit files, or generated model pickle files
+
+Upload the final group report PDF separately, following the assessment instruction that the report must include the Appendix C front page. The self-reflection and peer-assessment proforma should be submitted separately if Learning Central provides a separate upload point for that part.
