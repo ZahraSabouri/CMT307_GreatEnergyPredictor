@@ -56,20 +56,6 @@ The helper file `shared/data_loader.py` also contains OneDrive download links us
 
 Python 3.10 or newer is recommended.
 
-```bash
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-python -m ipykernel install --user --name cmt307-ashrae
-jupyter lab
-```
-
-On macOS/Linux, activate the environment with:
-
-```bash
-source .venv/bin/activate
-```
-
 Before running the notebooks, create the output folders if they do not already exist:
 
 ```bash
@@ -146,36 +132,3 @@ The original dataset is large:
 - The processed and feature-engineered CSVs can be several GB.
 
 Run the notebooks on a machine or Colab runtime with enough memory. If memory is limited, run the audit notebooks first, then run modelling notebooks on sampled data only for verification. The reported results were produced from the full processed training split unless a notebook explicitly states that a sample was used for hyperparameter search.
-
-## What to Upload
-
-The assessment brief asks for a group report and a separate zip file containing all Python code plus this README.
-
-Recommended code zip contents:
-
-```text
-CMT307_ASHRAE_Code/
-|-- README.md
-|-- requirements.txt
-|-- notebooks/
-|   |-- Shriya_Train_Audit_and_Verification.ipynb
-|   |-- Tanisha_Weather_and_Literature_Review.ipynb
-|   |-- Wahid_Building_Metadata_and_Models.ipynb
-|   |-- Zahra_Integration_and_Ensemble.ipynb
-|   |-- Shivalika_TimeSeries_and_LightGBM.ipynb
-|   `-- Ayan_Anomalies_and_RandomForest.ipynb
-`-- shared/
-    |-- data_loader.py
-    `-- metrics.py
-```
-
-Do not include these in the code zip:
-
-- `data/`
-- `data_processed/`
-- `outputs/`
-- `.git/`
-- `.ipynb_checkpoints/`
-- report drafts, planning documents, peer-assessment audit files, or generated model pickle files
-
-Upload the final group report PDF separately, following the assessment instruction that the report must include the Appendix C front page. The self-reflection and peer-assessment proforma should be submitted separately if Learning Central provides a separate upload point for that part.
