@@ -54,9 +54,9 @@ The notebooks expect this relative path when run from the `notebooks/` folder:
 ../data/ashrae-energy-prediction/
 ```
 
-The helper file `shared/data_loader.py` provides a central registry for all raw CSV files, processed CSV files, output CSVs, saved models, and generated figures used by the notebooks. In the submitted version, every value in the `LINKS` dictionary is intentionally an empty string. This avoids submitting private development links and leaves clear placeholders if direct-download links need to be added later.
+The helper file [`shared/data_loader.py`](shared/data_loader.py) provides a central registry for all raw CSV files, processed CSV files, output CSVs, saved models, and generated figures used by the notebooks. In the submitted version, every value in the `LINKS` dictionary is intentionally an empty string. This avoids submitting private development links and leaves clear placeholders if direct-download links need to be added later.
 
-The data loader checks for local files first, so no links are needed when the files already exist in the expected folders. If running in Google Colab or another environment where a file is missing, add a direct-download URL to the matching `LINKS` entry in `shared/data_loader.py`, then use the loader function or run the notebook cell again.
+The data loader checks for local files first, so no links are needed when the files already exist in the expected folders. If running in Google Colab or another environment where a file is missing, add a direct-download URL to the matching `LINKS` entry in [`shared/data_loader.py`](shared/data_loader.py), then use the loader function or run the notebook cell again.
 
 Useful examples:
 
@@ -84,13 +84,13 @@ Run these notebooks to reproduce the statistics, checks, and plots used for the 
 
 | Notebook | Main purpose | Main inputs | Main outputs |
 |---|---|---|---|
-| `Shriya_Train_Audit_and_Verification.ipynb` | Audits `train.csv` and `test.csv`, checks meter-reading patterns, validates merged train/test files. | Raw train/test data and merged files. | Dataset shape checks, meter summaries, time-feature checks. |
-| `Tanisha_Weather_and_Literature_Review.ipynb` | Audits weather missingness and produces processed weather files. | `weather_train.csv`, `weather_test.csv`. | `data_processed/weather_train_processed.csv`, `data_processed/weather_test_processed.csv`. |
-| `Wahid_Building_Metadata_and_Models.ipynb` | Audits building metadata, missing values, building categories, and feature transformations. | `building_metadata.csv`. | `data_processed/building_metadata_processed.csv`, metadata EDA tables/plots. |
-| `Shivalika_TimeSeries_and_LightGBM.ipynb` | Produces time-series EDA: hourly, monthly, weekday/weekend, timeline, and heatmap patterns. | `data_processed/merged_train.csv`. | Time-series plots and lag/rolling feature checks. |
-| `Ayan_Anomalies_and_RandomForest.ipynb` | Investigates zero streaks, Site 0 electricity calibration issue, extreme outliers, and sudden jumps. | `data_processed/merged_train.csv`. | Anomaly tables, including zero-streak building/meter pairs. |
+| [Shriya train audit](notebooks/Shriya_Train_Audit_and_Verification.ipynb#shriya-1-train-data-audit) | Audits `train.csv` and `test.csv`, checks meter-reading patterns, validates merged train/test files. | Raw train/test data and merged files. | Dataset shape checks, meter summaries, time-feature checks. |
+| [Tanisha weather audit](notebooks/Tanisha_Weather_and_Literature_Review.ipynb#tanisha-1-weather-data-audit) | Audits weather missingness and produces processed weather files. | `weather_train.csv`, `weather_test.csv`. | `data_processed/weather_train_processed.csv`, `data_processed/weather_test_processed.csv`. |
+| [Wahid metadata EDA](notebooks/Wahid_Building_Metadata_and_Models.ipynb#wahid-1-building-metadata-eda) | Audits building metadata, missing values, building categories, and feature transformations. | `building_metadata.csv`. | `data_processed/building_metadata_processed.csv`, metadata EDA tables/plots. |
+| [Shivalika time-series EDA](notebooks/Shivalika_TimeSeries_and_LightGBM.ipynb#shivalika-1-time-series-exploratory-analysis) | Produces time-series EDA: hourly, monthly, weekday/weekend, timeline, and heatmap patterns. | `data_processed/merged_train.csv`. | Time-series plots and lag/rolling feature checks. |
+| [Ayan anomaly investigation](notebooks/Ayan_Anomalies_and_RandomForest.ipynb#ayan-1-anomaly-investigation) | Investigates zero streaks, Site 0 electricity calibration issue, extreme outliers, and sudden jumps. | `data_processed/merged_train.csv`. | Anomaly tables, including zero-streak building/meter pairs. |
 
-For a full fresh run, create the merged training file first by running the initial merge cells of `Zahra_Integration_and_Ensemble.ipynb`. Those cells save:
+For a full fresh run, create the merged training file first by running [Zahra raw merge](notebooks/Zahra_Integration_and_Ensemble.ipynb#zahra-1-raw-data-loading-and-cross-table-merging). Those cells save:
 
 ```text
 data_processed/merged_train.csv
@@ -122,10 +122,10 @@ Model notebook details:
 
 | Notebook | Models trained/evaluated | Saved results |
 |---|---|---|
-| `Wahid_Building_Metadata_and_Models.ipynb` | Linear Regression, XGBoost, CatBoost baseline | `outputs/linear_boosting_model_results.csv`, saved model files |
-| `Shivalika_TimeSeries_and_LightGBM.ipynb` | LightGBM and XGBoost with lag/rolling features | LightGBM/XGBoost metrics and saved model files |
-| `Ayan_Anomalies_and_RandomForest.ipynb` | Random Forest and tuned CatBoost comparison | `outputs/baseline_evaluation_results.csv`, Random Forest/CatBoost metrics |
-| `Zahra_Integration_and_Ensemble.ipynb` | Hard voting and soft voting ensemble using saved model predictions | `outputs/comparison_table.csv`, `outputs/ensemble_val_predictions.csv` |
+| [Wahid models](notebooks/Wahid_Building_Metadata_and_Models.ipynb#wahid-3-training-linear-regression-xgboost-and-catboost-models) | Linear Regression, XGBoost, CatBoost baseline | `outputs/linear_boosting_model_results.csv`, saved model files |
+| [Shivalika models](notebooks/Shivalika_TimeSeries_and_LightGBM.ipynb#shivalika-3-lightgbm-and-xgboost-training-and-tuning) | LightGBM and XGBoost with lag/rolling features | LightGBM/XGBoost metrics and saved model files |
+| [Ayan models](notebooks/Ayan_Anomalies_and_RandomForest.ipynb#ayan-3-random-forest-training-and-randomizedsearchcv-tuning) | Random Forest and tuned CatBoost comparison | `outputs/baseline_evaluation_results.csv`, Random Forest/CatBoost metrics |
+| [Zahra ensemble](notebooks/Zahra_Integration_and_Ensemble.ipynb#zahra-3-five-model-ensemble-comparison) | Hard voting and soft voting ensemble using saved model predictions | `outputs/comparison_table.csv`, `outputs/ensemble_val_predictions.csv` |
 
 The report's best validation result is the soft-voting CatBoost + LightGBM ensemble, with RMSLE approximately `0.4997` on the November-December 2016 held-out validation period.
 
