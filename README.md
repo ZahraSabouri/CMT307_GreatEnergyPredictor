@@ -44,6 +44,8 @@ data/ashrae-energy-prediction/
 `-- sample_submission.csv
 ```
 
+Important: the Kaggle `test.csv` file is unlabeled, so it was not used for the model evaluation reported in the project. All reported training/testing results use a chronological split of `train.csv`: January-October 2016 for training and November-December 2016 as the held-out test/validation period. The Kaggle `test.csv`, `weather_test.csv`, and `sample_submission.csv` are only needed if someone wants to generate optional Kaggle-style prediction files.
+
 The notebooks expect this relative path when run from the `notebooks/` folder:
 
 ```text
