@@ -30,7 +30,7 @@ The final report uses Root Mean Squared Logarithmic Error (RMSLE). All modelling
 
 Large data files, processed CSV files, saved model files, and generated outputs are not included in the code zip because they are reproducible and too large for submission.
 
-Each notebook begins with a linked **Notebook Summary and Run Map**. The run map gives the project-wide execution order and links to the relevant markdown sections in the same notebook or another notebook.
+Each notebook begins with a linked **Notebook Summary** for its own sections. The full project execution map is kept in this README so the global run order is documented once instead of repeated in every notebook.
 
 ## Data Setup
 
@@ -100,42 +100,32 @@ Then run the descriptive notebooks above.
 
 ## Part 2: Preprocessing, Model Training, and Evaluation
 
-The most reliable full reproduction order is:
+The most reliable full reproduction order is summarized below. The phase labels match the linked notebook section headings.
 
-1. `Zahra_Integration_and_Ensemble.ipynb`, initial merge cells  
-   Creates `merged_train.csv` from the original train, building metadata, and weather training files. The unused Kaggle `test.csv` merge is not part of the final workflow.
+| Phase | Run step | Main inputs | Output / purpose |
+|---|---|---|---|
+| A0 | Optional source-data audits: [Shriya train audit](notebooks/Shriya_Train_Audit_and_Verification.ipynb#shriya-1-train-data-audit), [Tanisha weather audit](notebooks/Tanisha_Weather_and_Literature_Review.ipynb#tanisha-1-weather-data-audit), [Wahid metadata EDA](notebooks/Wahid_Building_Metadata_and_Models.ipynb#wahid-1-building-metadata-eda) | Raw ASHRAE files | Descriptive checks, missingness summaries, and preprocessing decisions used in the report |
+| A1 | [Zahra raw merge](notebooks/Zahra_Integration_and_Ensemble.ipynb#zahra-1-raw-data-loading-and-cross-table-merging) | `train.csv`, `building_metadata.csv`, `weather_train.csv` | Creates `data_processed/merged_train.csv` |
+| A2 | [Ayan anomaly investigation](notebooks/Ayan_Anomalies_and_RandomForest.ipynb#ayan-1-anomaly-investigation) | `data_processed/merged_train.csv` | Produces anomaly findings used by the central cleaning pipeline |
+| B1 | [Zahra central preprocessing](notebooks/Zahra_Integration_and_Ensemble.ipynb#zahra-2-central-preprocessing-pipeline) | `merged_train.csv` and anomaly findings | Creates `data_processed/final_train.csv` and `data_processed/final_val.csv` |
+| B2 | [Shivalika lag/rolling features](notebooks/Shivalika_TimeSeries_and_LightGBM.ipynb#shivalika-2-lag-and-rolling-window-feature-engineering) | `final_train.csv`, `final_val.csv` | Creates `data_processed/final_train_with_features.csv` and `data_processed/final_test_with_features.csv` |
+| C | Train individual models: [Wahid models](notebooks/Wahid_Building_Metadata_and_Models.ipynb#wahid-3-training-linear-regression-xgboost-and-catboost-models), [Shivalika models](notebooks/Shivalika_TimeSeries_and_LightGBM.ipynb#shivalika-3-lightgbm-and-xgboost-training-and-tuning), [Ayan models](notebooks/Ayan_Anomalies_and_RandomForest.ipynb#ayan-3-random-forest-training-and-randomizedsearchcv-tuning) | Feature-engineered train/validation files | Saves individual model files and model-result CSVs in `outputs/` |
+| D | [Zahra ensemble](notebooks/Zahra_Integration_and_Ensemble.ipynb#zahra-3-five-model-ensemble-comparison), then [save best predictions](notebooks/Zahra_Integration_and_Ensemble.ipynb#zahra-4-best-ensemble-predictions-saved) | Saved models and validation features | Creates `outputs/comparison_table.csv` and `outputs/ensemble_val_predictions.csv` |
 
-2. `Ayan_Anomalies_and_RandomForest.ipynb`, anomaly-detection section  
-   Produces the anomaly report used by the central cleaning pipeline. Save the combined anomaly table as:
+Important notes:
 
-   ```text
-   outputs/anomaly_report.csv
-   ```
+- The unused Kaggle `test.csv` merge is not part of the final evaluation workflow because Kaggle `test.csv` has no labels.
+- The historical filename `final_test_with_features.csv` refers to the held-out November-December 2016 validation split, not the Kaggle test set.
+- Run all model sections in phase C before phase D so the ensemble notebook can find the saved model files.
 
-3. `Zahra_Integration_and_Ensemble.ipynb`, central preprocessing cells  
-   Applies metadata imputation, weather imputation, feature engineering, anomaly cleaning, target transformation, and chronological train/validation split. This saves:
+Model notebook details:
 
-   ```text
-   data_processed/final_train.csv
-   data_processed/final_val.csv
-   ```
-
-4. `Shivalika_TimeSeries_and_LightGBM.ipynb`, feature-engineering section  
-   Adds lag and rolling features and saves the train set plus the held-out validation period. The historical filename `final_test_with_features.csv` refers to the validation split, not the Kaggle test set.
-
-   ```text
-   data_processed/final_train_with_features.csv
-   data_processed/final_test_with_features.csv
-   ```
-
-5. Model notebooks:
-
-   | Notebook | Models trained/evaluated | Saved results |
-   |---|---|---|
-   | `Wahid_Building_Metadata_and_Models.ipynb` | Linear Regression, XGBoost, CatBoost baseline. | `outputs/linear_boosting_model_results.csv`, saved model files. |
-   | `Shivalika_TimeSeries_and_LightGBM.ipynb` | LightGBM and XGBoost with lag/rolling features. | LightGBM/XGBoost metrics and saved model files. |
-   | `Ayan_Anomalies_and_RandomForest.ipynb` | Random Forest and tuned CatBoost comparison. | `outputs/baseline_evaluation_results.csv`, Random Forest/CatBoost metrics. |
-   | `Zahra_Integration_and_Ensemble.ipynb`, ensemble section | Hard voting and soft voting ensemble using saved model predictions. | `outputs/comparison_table.csv`, `outputs/ensemble_val_predictions.csv`. |
+| Notebook | Models trained/evaluated | Saved results |
+|---|---|---|
+| `Wahid_Building_Metadata_and_Models.ipynb` | Linear Regression, XGBoost, CatBoost baseline | `outputs/linear_boosting_model_results.csv`, saved model files |
+| `Shivalika_TimeSeries_and_LightGBM.ipynb` | LightGBM and XGBoost with lag/rolling features | LightGBM/XGBoost metrics and saved model files |
+| `Ayan_Anomalies_and_RandomForest.ipynb` | Random Forest and tuned CatBoost comparison | `outputs/baseline_evaluation_results.csv`, Random Forest/CatBoost metrics |
+| `Zahra_Integration_and_Ensemble.ipynb` | Hard voting and soft voting ensemble using saved model predictions | `outputs/comparison_table.csv`, `outputs/ensemble_val_predictions.csv` |
 
 The report's best validation result is the soft-voting CatBoost + LightGBM ensemble, with RMSLE approximately `0.4997` on the November-December 2016 held-out validation period.
 
