@@ -30,6 +30,8 @@ The final report uses Root Mean Squared Logarithmic Error (RMSLE). All modelling
 
 Large data files, processed CSV files, saved model files, and generated outputs are not included in the code zip because they are reproducible and too large for submission.
 
+Each notebook begins with a linked **Notebook Summary and Run Map**. The run map gives the project-wide execution order and links to the relevant markdown sections in the same notebook or another notebook.
+
 ## Data Setup
 
 Download the ASHRAE Great Energy Predictor III files and place them here:
@@ -52,7 +54,19 @@ The notebooks expect this relative path when run from the `notebooks/` folder:
 ../data/ashrae-energy-prediction/
 ```
 
-The helper file `shared/data_loader.py` also contains OneDrive download links used during development. If running in Google Colab, upload the notebooks and either mount/download the data to the matching paths or adapt the first data-loading cell to point to the Colab data folder.
+The helper file `shared/data_loader.py` provides a central registry for all raw CSV files, processed CSV files, output CSVs, saved models, and generated figures used by the notebooks. In the submitted version, every value in the `LINKS` dictionary is intentionally an empty string. This avoids submitting private development links and leaves clear placeholders if direct-download links need to be added later.
+
+The data loader checks for local files first, so no links are needed when the files already exist in the expected folders. If running in Google Colab or another environment where a file is missing, add a direct-download URL to the matching `LINKS` entry in `shared/data_loader.py`, then use the loader function or run the notebook cell again.
+
+Useful examples:
+
+```python
+from shared.data_loader import list_files, load_train, load_final_train_with_features
+
+print(list_files())          # registered raw, processed, output, and model files
+train = load_train()         # loads data/ashrae-energy-prediction/train.csv
+features = load_final_train_with_features()
+```
 
 ## Environment Setup
 
