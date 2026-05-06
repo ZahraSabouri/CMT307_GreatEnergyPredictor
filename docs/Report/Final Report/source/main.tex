@@ -260,7 +260,7 @@ Both Hard Voting and Soft Voting were evaluated using different variations of Li
 \end{figure}
 
 \subsection{Error Analysis}
-Residual inspection showed errors are not uniformly distributed: the largest log-residuals concentrate on (i) very low or zero readings that the model slightly over-predicts, (ii) extreme summer-peak steam and hot-water spikes that are under-predicted, and (iii) buildings with short training history. RMSLE also penalises under-prediction more heavily than over-prediction, which amplifies the visible error on peak hot-water hours. Errors were near-zero-mean per building but heavy-tailed, consistent with sensor noise and unmodelled occupancy events.
+Residual inspection for the best soft-voting ensemble showed a strongly heavy-tailed error distribution. The median absolute log-residual was only 0.090, but the largest 5\% of absolute residuals contributed 84.9\% of the total squared log error. Zero readings were especially influential: they represented 3.25\% of held-out test rows but accounted for 46.3\% of total squared log error, with a mean prediction of 26.8 when the true reading was zero. Error was also uneven across meter types. Hot water represented only 5.6\% of rows but contributed 25.9\% of total squared log error, whereas electricity represented 62.0\% of rows but only 14.3\% of squared log error. At the high-consumption end, readings above 1000 had a negative mean log-residual of -0.130, and the top 1\% of chilled-water, steam and hot-water readings had median prediction-to-actual ratios of 0.83, 0.82 and 0.85 respectively, indicating systematic under-prediction of large spikes.
 
 
 \section{Limitations}
